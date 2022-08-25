@@ -35,6 +35,15 @@ const actions = {
       }
       return el
     })
+    mainRouter = mainRouter.filter(el => !el.hidden);
+    mainRouter = mainRouter.map(el => {
+      if(el.children && el.children.length){
+          let children = el.children.filter(it => !it.hidden);
+          return {...el, children}
+      }
+      return el
+    })
+    console.log('route', mainRouter)
     commit("SET_ROUTES", mainRouter);
 
   },

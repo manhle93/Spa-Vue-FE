@@ -232,7 +232,7 @@ export default {
     confirmPassword() {
       return () =>
         this.form.confirmPassword === this.form.password ||
-        "パスワード確認はパスワードと一致していません。";
+        "Mật khẩu 2 lần không trùng khớp";
     },
     USER() {
       return this.$store.state.User.me;
@@ -275,7 +275,7 @@ export default {
           this.show = false;
           this.btnLoading = false;
           this.$emit("on-done");
-          this.$toast.info("ユーザー登録は完了しました。", {
+          this.$toast.info("Tạo tài khoản thành công", {
             position: "top-center",
             timeout: 2000,
             closeOnClick: true,
@@ -359,7 +359,7 @@ export default {
           this.show = false;
           this.btnLoading = false;
           this.$emit("on-done");
-          this.$toast.info("ユーザー更新は完了しました。", {
+          this.$toast.info("Cập nhật tài khoản thành công", {
             position: "top-center",
             timeout: 2000,
             closeOnClick: true,

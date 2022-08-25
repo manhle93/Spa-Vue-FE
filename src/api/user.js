@@ -77,7 +77,7 @@ export function updateMyUser(data) {
 }
 export function createUser(data) {
   return request({
-    url: "/adduser",
+    url: "/createuser",
     method: "post",
     data
   });

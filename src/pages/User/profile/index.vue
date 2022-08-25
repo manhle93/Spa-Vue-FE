@@ -45,7 +45,7 @@
                       <img
                         :src="
                           USER.url_image
-                            ? imageEndpoint + USER.url_image
+                            ? imageEndpoint + USER.urlImage
                             : avatarNone
                         "
                         alt="ManhLe"
@@ -141,7 +141,7 @@
                       outlined
                       dense
                       prepend-inner-icon="mdi-account"
-                      v-model="form.user_name"
+                      v-model="form.userName"
                     ></v-text-field>
                     <div class="label-form">E-Mail</div>
                     <v-text-field
@@ -252,26 +252,26 @@ export default {
     },
     btnLoading: false,
     rulePass: {
-      currentPass: [(v) => !!v || "旧パスワードを入力してください"],
-      newPassWord: [(v) => !!v || "新パスワードを入力してください"],
+      currentPass: [(v) => !!v || "Hãy nhập mật khẩu hiện tại"],
+      newPassWord: [(v) => !!v || "Mật khẩu mới không thể bỏ trống"],
     },
     form: {
-      user_name: "",
+      userName: "",
       name: "",
       email: "",
       company_name: "",
     },
     nameRules: [
-      (v) => !!v || "代表者名を入力してください",
-      (v) => (v && v.length >= 2) || "代表者名は最低２文字で入力してください",
+      (v) => !!v || "Tên người dùng không thể bổ trống",
+      (v) => (v && v.length >= 2) || "Tên người dùng tối thiểu 2 ký tự",
     ],
     userNameRules: [
-      (v) => !!v || "ユーザー名を入力してください",
-      (v) => (v && v.length >= 3) || "ユーザー名は最低３文字で入力してください",
+      (v) => !!v || "Tên đăng nhập không thể bỏ trống",
+      (v) => (v && v.length >= 3) || "Tên đăng nhập tối thiểu 3 ký tự",
     ],
     emailRules: [
-      (v) => !!v || "Eメールアドレスを入力してください",
-      (v) => /.+@.+\..+/.test(v) || "Eメールアドレスは正しく入力してください",
+      (v) => !!v || "E-Mail không thể bỏ trống",
+      (v) => /.+@.+\..+/.test(v) || "E-Mail không đúng định dạng",
     ],
   }),
   computed: {
@@ -280,15 +280,15 @@ export default {
     },
     reNewPassWord() {
       if (!this.changePassWord.reNewPassWord)
-        return () => "新パスワードを再度入力してください";
+        return () => "Mật khẩu hiện tại không thể bỏ trống";
       return () =>
         this.changePassWord.newPassWord === this.changePassWord.reNewPassWord ||
-        "新パスワード確認は新パスワードと一致していません";
+        "Mật khẩu 2 lần nhập không khớp";
     },
   },
   mounted() {
     this.form.name = this.USER.name;
-    this.form.user_name = this.USER.user_name;
+    this.form.userName = this.USER.userName;
     this.form.email = this.USER.email;
     this.form.company_name = this.USER.company_name
   },
@@ -380,7 +380,7 @@ export default {
             newPassWord: null,
             reNewPassWord: null,
           };
-          this.$toast.info("パスワード変更は完了しました", {
+          this.$toast.info("Cập nhật mật khẩu thành công", {
             position: "top-center",
             timeout: 2000,
             closeOnClick: true,
@@ -407,7 +407,7 @@ export default {
           this.show = false;
           this.btnLoading = false;
           this.$emit("on-done");
-          this.$toast.info("プロファイル更新は完了しました", {
+          this.$toast.info("Cập nhật thành công", {
             position: "top-center",
             timeout: 2000,
             closeOnClick: true,

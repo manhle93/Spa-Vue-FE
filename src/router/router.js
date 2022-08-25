@@ -59,7 +59,7 @@ export const routes = [
             component: () => import("@/pages/User/management/index"),
             name: "Management",
             icon: "mdi-account-multiple",
-            role: ['admin']
+            role: ['admin'],
           },
         ],
       },

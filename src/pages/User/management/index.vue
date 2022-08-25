@@ -245,8 +245,8 @@ export default {
         page: 1,
         perPage: this.itemsPerPage,
         search: val,
-        role_id: this.roleId,
-        trang_thai: this.trang_thai,
+        roleId: this.roleId,
+        active: this.trang_thai,
       });
       this.loading = false;
       this.tableData = data.docs;
@@ -259,9 +259,9 @@ export default {
       let data = await listUser({
         page: this.page,
         perPage: this.itemsPerPage,
-        role_id: this.roleId,
+        roleId: this.roleId,
         search: this.search,
-        trang_thai: this.trang_thai,
+        active: this.trang_thai,
       });
       this.loading = false;
       this.tableData = data.docs;
@@ -279,36 +279,20 @@ export default {
     },
     async activeUser(user) {
       this.$confirmBox.show({
-        title: "ユーザーのアカウントを有効にします",
+        title: "Kích hoạt tài khoản người dùng",
         width: 500,
         body:
-          "<strong>" +
-          user.name +
-          "のアカウントを有効にしますか" +
-          " ?" +
-          "</strong><br>" +
-          "<strong>" +
-          user.name +
-          "</strong>" +
-          "はシステムにログイン可能になります",
+        `Kích hoạt tài khoản người dùng <strong>${user.name}</strong> ?. <br/> Sau khi kích hoạt người dùng <strong>${user.name}</strong> có thể đăng nhập hệ thống`,
         action: () => activeUser({ userId: user.id, active: true }),
         onDone: this.getDataUsers,
       });
     },
     async deactivateUser(user) {
       this.$confirmBox.show({
-        title: "ユーザーのアカウントを無効にします",
+        title: "Hủy kích hoạt tài khoản",
         width: 480,
         body:
-          "<strong>" +
-          user.name +
-          "のアカウントを無効にしますか" +
-          " ?" +
-          "</strong><br>" +
-          "<strong>" +
-          user.name +
-          "</strong>" +
-          "はシステムにログイン不可能になります",
+        `Hủy kích hoạt tài khoản người dùng <strong>${user.name}</strong> ?. <br/> Người dùng <strong>${user.name}</strong> không thể đăng nhập hệ thống`,
         action: () => activeUser({ userId: user.id, active: false }),
         onDone: this.getDataUsers,
       });

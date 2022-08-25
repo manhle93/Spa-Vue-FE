@@ -14,10 +14,10 @@
         <v-spacer></v-spacer>
 
         <v-btn color="gray" text @click="dialog = false">
-          キャンセル
+          Hủy bỏ
         </v-btn>
         <v-btn class="ma-2" color="primary" dark small @click="accept()" :loading="btnLoading">
-          確認
+          Đồng ý
           <v-icon dark right>
             mdi-checkbox-marked-circle
           </v-icon>
