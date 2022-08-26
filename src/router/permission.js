@@ -53,7 +53,6 @@ router.beforeEach(async (to, form, next) => {
         if (hasRole) {
           next();
         } else {
-          // next();
           next({name: "Error"});
         }
       }

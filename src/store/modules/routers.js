@@ -35,26 +35,16 @@ const actions = {
       }
       return el
     })
-    mainRouter = mainRouter.filter(el => !el.hidden);
-    mainRouter = mainRouter.map(el => {
-      if(el.children && el.children.length){
-          let children = el.children.filter(it => !it.hidden);
-          return {...el, children}
-      }
-      return el
-    })
-    console.log('route', mainRouter)
     commit("SET_ROUTES", mainRouter);
 
   },
   checkRoleUser({ commit }, name) {
     //Kiem tra quyen truy cap router theo name
-    const roleRole = userState.me ? userState.me.role.code : null;
+    const roleCode = userState.me ? userState.me.role.code : null;
     let data = state.routes;
-    console.log(userState, data)
     let parent = []
     data.forEach(el => {
-      if (!el.role || el.role.includes(roleRole)) {
+      if (!el.role || el.role.includes(roleCode)) {
         parent.push(el.name)
       }
     })
@@ -63,7 +53,7 @@ const actions = {
     data.forEach(el => {
       if (el.children) {
         el.children.forEach(it => {
-          if (!it.role || it.role.includes(roleRole)) {
+          if (!it.role || it.role.includes(roleCode)) {
             children.push(it.name)
           }
         }
@@ -71,7 +61,6 @@ const actions = {
       }
     });
     let newData = [...parent, ...children]; //Mảng chứa toàn bộ name của rouuter
-    console.log(2, newData)
     if (newData.includes(name) || name == "Error") {
       commit("SET_ACCESS", true);
     } else {

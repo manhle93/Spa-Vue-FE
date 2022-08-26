@@ -32,7 +32,6 @@
       value="100"
     ></v-progress-linear>
     <v-card-title class="pa-6 pb-4">
-      <!-- <p>Danh sách người dùng</p> -->
       <v-spacer></v-spacer>
       <div style="width: 800px" class="mr-4">
         <v-row>

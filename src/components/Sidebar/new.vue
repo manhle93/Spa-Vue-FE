@@ -19,7 +19,7 @@
           :key="key"
           :children="item.children.filter((el) => !el.hidden)"
         />
-        <SingleItemSidebar v-else :item="item" :mini="isMini" :key="key" />
+        <SingleItemSidebar v-else :item="item" :mini="isMini" :key="`${key}-${item.name}`" />
       </template>
     </v-list>
   </v-navigation-drawer>
@@ -39,7 +39,7 @@ export default {
     return {
       drawerWidth: 0,
       mini: false,
-      sidebarWidth: 250,
+      sidebarWidth: 280,
     };
   },
 

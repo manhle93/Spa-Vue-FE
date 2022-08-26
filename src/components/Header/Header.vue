@@ -1,78 +1,24 @@
 <template>
-  <v-app-bar
-    class="main-header"
-    style="box-shadow: none"
-    height="45"
-    fixed
-    color="indigo darken-4"
-    dark
-  >
-    <v-progress-linear
-      indeterminate
-      color="yellow darken-2"
-      style="position: fixed; bottom: 0; left: 0; width: 100%"
-      height="4"
-      v-show="loadingBar"
-    ></v-progress-linear>
-    <v-avatar size="38" class="mr-3">
-      <img :src="Logo" alt="John" />
-    </v-avatar>
-    <v-toolbar-title style="font-size: 16px">Application</v-toolbar-title>
-    <v-btn icon class="mx-1" @click.stop="TOGGLE_DRAWER">
-      <template>
-        <v-icon style="font-size: 20px">mdi-menu</v-icon>
-      </template>
+  <v-app-bar class="main-header" style="box-shadow: none" height="45" fixed color="indigo darken-4" dark>
+       <v-btn  v-if="!DRAWER_STATE" icon @click.stop="TOGGLE_DRAWER">
+        <v-icon size="30">mdi-menu</v-icon>
+      </v-btn>
+    <div style="width: 250px; height: 100%" class="d-flex align-center">
+      <v-icon size="30" v-if="DRAWER_STATE">mdi-view-dashboard</v-icon>
+      <v-toolbar-title style="font-size: 16px" class="ml-2">Application</v-toolbar-title>
+    </div>
+    <v-btn v-if="DRAWER_STATE" icon @click.stop="TOGGLE_DRAWER">
+      <v-icon>mdi-menu</v-icon>
     </v-btn>
     <v-spacer></v-spacer>
-    <!-- <Search /> -->
-
-    <!-- <v-menu offset-y bottom nudge-bottom="10" left>
-      <template v-slot:activator="{on, attrs}">
-        <v-btn
-          @click="notificationsBadge ? (notificationsBadge = !notificationsBadge) : ''"
-          v-bind="attrs"
-          v-on="on"
-          style="font-size: 28px"
-          icon
-          class="mr-2"
-        >
-          <v-badge :value="notificationsBadge" color="error" content="4" overlap>
-            <v-icon style="font-size: 28px" color="rgba(255, 255, 255, 0.35)">mdi-bell-outline</v-icon>
-          </v-badge>
-        </v-btn>
-      </template>
-      <v-list>
-        <v-list-item-group color="primary">
-          <v-list-item v-for="(item, i) in notifications" :key="i">
-            <v-list-item-icon class="mr-4 mb-1">
-              <v-icon :color="item.color" v-text="item.icon"></v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.text"></v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </v-menu> -->
+    <v-progress-linear indeterminate color="yellow darken-2" style="position: fixed; bottom: 0; left: 0; width: 100%"
+      height="4" v-show="loadingBar"></v-progress-linear>
     <v-menu width="400" offset-y bottom nudge-bottom="10" left>
       <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          @click="messageBadge ? (messageBadge = !messageBadge) : ''"
-          v-bind="attrs"
-          v-on="on"
-          style="font-size: 28px"
-          icon
-          class="mr-4"
-        >
-          <v-badge
-            :value="soThongBao"
-            color="pink"
-            :content="soThongBao"
-            overlap
-          >
-            <v-icon color="yellow lighten-4" style="font-size: 20px"
-              >mdi-bell</v-icon
-            >
+        <v-btn @click="messageBadge ? (messageBadge = !messageBadge) : ''" v-bind="attrs" v-on="on"
+          style="font-size: 28px" icon class="mr-4">
+          <v-badge :value="soThongBao" color="pink" :content="soThongBao" overlap>
+            <v-icon color="yellow lighten-4" style="font-size: 20px">mdi-bell</v-icon>
           </v-badge>
         </v-btn>
       </template>
@@ -80,49 +26,32 @@
         <v-layout class="px-4 pt-3 pb-4" align-center style="width: 390px">
           <div class="text-h5 grey--text text--darken-3">Thông báo</div>
           <v-spacer></v-spacer>
-          <router-link
-            class="pr-4"
-            style="font-size: 14px"
-            :to="'/thongbao'"
-            v-if="thongBaos && thongBaos.length > 0"
-            >Xem tất cả</router-link
-          >
+          <router-link class="pr-4" style="font-size: 14px" :to="'/thongbao'" v-if="thongBaos && thongBaos.length > 0">
+            Xem tất cả</router-link>
         </v-layout>
 
         <div v-if="thongBaos && thongBaos.length > 0">
           <v-list-item-group color="primary">
-            <v-list-item
-              v-for="(item, i) in thongBaos"
-              :key="i"
-              two-line
-              @click="xemThongBao(item)"
-              :style="{ background: !item.seen ? '#E3F2FD' : 'white' }"
-            >
+            <v-list-item v-for="(item, i) in thongBaos" :key="i" two-line @click="xemThongBao(item)"
+              :style="{ background: !item.seen ? '#E3F2FD' : 'white' }">
               <v-list-item-avatar color="indigo" size="40">
-                <img
-                  v-if="item.from_user && item.from_user.url_image"
-                  :src="imageEndpoint + item.from_user.url_image"
-                  alt="ManhLe"
-                />
-                <span
-                  style="color: white"
-                  v-else-if="item.from_user && !item.from_user.url_image"
-                  >{{ item.from_user.name.charAt(0).toUpperCase() }}</span
-                >
+                <img v-if="item.from_user && item.from_user.url_image" :src="imageEndpoint + item.from_user.url_image"
+                  alt="ManhLe" />
+                <span style="color: white" v-else-if="item.from_user && !item.from_user.url_image">{{
+                    item.from_user.name.charAt(0).toUpperCase()
+                }}</span>
                 <v-icon v-else dark>mdi-account</v-icon>
               </v-list-item-avatar>
               <v-list-item-content style="width: 190px" class="pr-2">
                 <div style="font-size: 15px">
                   {{
-                    item.noi_dung.length > 45
-                      ? String(item.noi_dung).substr(0, 45) + "..."
-                      : item.noi_dung
+                      item.noi_dung.length > 45
+                        ? String(item.noi_dung).substr(0, 45) + "..."
+                        : item.noi_dung
                   }}
                 </div>
-                <v-list-item-subtitle
-                  v-text="item.thoi_gian_nhan_thong_bao"
-                  class="text-truncate"
-                ></v-list-item-subtitle>
+                <v-list-item-subtitle v-text="item.thoi_gian_nhan_thong_bao" class="text-truncate">
+                </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
           </v-list-item-group>
@@ -138,13 +67,9 @@
     <v-menu min-width="180" offset-y bottom left nudge-bottom="10">
       <template v-slot:activator="{ on, attrs }">
         <v-avatar v-bind="attrs" v-on="on" color="orange" size="30">
-          <img
-            v-if="USER && USER.url_image"
-            :src="imageEndpoint + USER.url_image"
-            alt="John"
-          />
+          <img v-if="USER && USER.url_image" :src="imageEndpoint + USER.url_image" alt="John" />
           <span class="white--text headline" v-else-if="USER && USER.name">{{
-            USER.name.charAt(0).toUpperCase()
+              USER.name.charAt(0).toUpperCase()
           }}</span>
           <v-icon v-else dark>mdi-account</v-icon>
         </v-avatar>
@@ -269,4 +194,5 @@ export default {
 };
 </script>
 
-<style src="./Header.scss" lang="scss"></style>
+<style src="./Header.scss" lang="scss">
+</style>

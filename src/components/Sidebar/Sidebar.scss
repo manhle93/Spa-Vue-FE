@@ -35,7 +35,7 @@
       div,
       a {
         &.v-list-item {
-          color: $text-color;
+          color: #3F51B5;
           transition: 300ms all;
           padding-left: $drawer-items-padding / 4;
         }
@@ -68,14 +68,14 @@
   .sidebar-item.v-list-item--active {
     & > div,
     .v-list-item__content  {
-      font-weight: 500 !important;
+      font-weight: 550 !important;
     }
   }
 
   .sidebar-item.v-list-item--active,
   .v-list-group.sidebar-item .v-list-item.v-list-item--active {
-    color: rgb(20, 2, 121);
-    font-weight: 500 !important;
+    color: #3F51B5;
+    font-weight: 550 !important;
     background: rgba(9, 30, 66, 0.08) !important;
   }
   .v-list-group.sidebar-item .v-list-item:hover,

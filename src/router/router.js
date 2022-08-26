@@ -28,13 +28,13 @@ export const routes = [
       //Dashboard Router write here
       {
         path: "dashboard",
-        name: "Dashboard",
+        name: "Tổng quan",
         component: Dashboard,
         icon: 'mdi-grid-large',
       },
       {
         path: "users",
-        name: "Users",
+        name: "Người dùng",
         icon: 'mdi-account',
         component: Blank,
         children: [
@@ -51,17 +51,82 @@ export const routes = [
           {
             path: "profile",
             component: () => import("@/pages/User/profile/index"),
-            name: "Profile",
+            name: "Tài khoản",
             icon: "mdi-information"
           },
           {
             path: "management",
             component: () => import("@/pages/User/management/index"),
-            name: "Management",
+            name: "Quản lý người dùng",
             icon: "mdi-account-multiple",
             role: ['admin'],
           },
         ],
+      },
+      {
+        path: "coso",
+        name: "Quản lý cơ sở",
+        icon: 'mdi-home-modern',
+        component: () => import("@/pages/CoSo/index")     
+      },
+      {
+        path: "nhansu",
+        name: "Quản lý nhân sự",
+        icon: 'mdi-account-multiple',
+        component: Blank,
+        children: [
+          {
+            path: "chucoso",
+            component: () => import("@/pages/Nhansu/ChuCoSo/index"),
+            name: "Chủ cơ sở",
+            icon: "mdi-account-star",
+            role: ['admin'],
+          },
+          {
+            path: "themchucoso",
+            component: () => import("@/pages/Nhansu/ChuCoSo/create"),
+            name: "Thêm chủ cơ sở",
+            hidden: true,
+            role: ['admin'],
+          },
+          {
+            path: "kythuatvien",
+            component: () => import("@/pages/Nhansu/KyThuatVien/index"),
+            name: "Kỹ thuật viên",
+            icon: "mdi-human-male-female",
+          },
+          {
+            path: "themkythuatvien",
+            component: () => import("@/pages/Nhansu/KyThuatVien/create"),
+            name: "Thêm chủ cơ sở",
+            hidden: true,
+            role: ['admin'],
+          },
+        ],
+      },
+      {
+        path: "danhmucsanpham",
+        name: "Sản phẩm - Dịch vụ",
+        icon: 'mdi-leaf',
+        component: Blank,     
+      },
+      {
+        path: "quanlydonhang",
+        name: "Quản lý đơn hàng",
+        icon: 'mdi-format-list-bulleted',
+        component: Blank,     
+      },
+      {
+        path: "voucher",
+        name: "Voucher - Giảm giá",
+        icon: 'mdi-qrcode',
+        component: Blank,     
+      },
+      {
+        path: "feedbacks",
+        name: "Phản hồi - Khiếu nại",
+        icon: 'mdi-message',
+        component: Blank,     
       },
     ],
   },
