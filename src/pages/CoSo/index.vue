@@ -10,18 +10,10 @@
         </v-list-item-content>
 
         <div class="pt-3">
-          <!-- <v-btn color="#33691E" class="mr-4" @click="exportExcel">
-              <v-avatar size="30" class="mr-2">
-                <img :src="excelPic" />
-              </v-avatar>
-              <span style="color: white" class="btn-add">Xuất Excel</span>
-            </v-btn> -->
-          <router-link to="/nhansu/themchucoso">
-            <v-btn color="indigo">
-              <v-icon color="white">mdi-plus</v-icon>
-              <span style="color: white" class="btn-add">Thêm Cơ Sở</span>
-            </v-btn>
-          </router-link>
+          <v-btn color="indigo" @click="createStore">
+            <v-icon color="white">mdi-plus</v-icon>
+            <span style="color: white" class="btn-add">Thêm Cơ Sở</span>
+          </v-btn>
         </div>
       </v-layout>
     </v-list-item>
@@ -37,7 +29,7 @@
             </v-select>
           </v-col>
           <v-col cols="4">
-            <v-autocomplete v-model="phong_ban_id" item-text="name" item-value="id" :items="phongBans"
+            <v-autocomplete item-text="name" item-value="id" :items="phongBans"
               placeholder="Cơ sở" hide-details clearable :filter="fullTextFilter" @change="searchData"
               prepend-inner-icon="mdi-city"></v-autocomplete>
           </v-col>
@@ -49,42 +41,12 @@
       </div>
     </v-card-title>
     <v-data-table :headers="headers" :items="tableData" :page.sync="page" :items-per-page="itemsPerPage"
-      hide-default-footer :loading="loading" class="elevation-1 table-nhanvien" loading-text="Đang tải dữ liệu ..."
-      @click:row="clickRow">
-      <template v-slot:[`item.name`]="{ item }">
-        <router-link :to="'/nhansu/thongtinnhanvien/' + item.id" style="text-decoration: none; color: black">
-          <v-layout align-center>
-            <v-avatar color="indigo" size="36">
-              <img v-if="item.url_image" :src="imageEndpoint + item.url_image" alt="ManhLe" />
-              <span style="color: white" v-else-if="item && item.name">{{
-                  item.name.charAt(0).toUpperCase()
-              }}</span>
-              <v-icon v-else dark>mdi-account</v-icon>
-            </v-avatar>
-            <div>
-              <span class="ml-2" style="font-size: 16px">{{ item.name }}</span>
-              <div class="ml-2" style="color: gray">Mã NV: {{ item.ma_nhan_vien }}</div>
-            </div>
-          </v-layout>
-
-        </router-link>
-      </template>
-      <template v-slot:[`item.gioi_tinh`]="{ item }">
-        {{ item.gioi_tinh ? "Nam" : "Nữ" }}
-      </template>
-      <template v-slot:[`item.da_nghi_viec`]="{ item }">
-        <v-chip v-if="item.da_nghi_viec" color="pink" dark small>
-          Đã nghỉ việc
+      hide-default-footer :loading="loading" class="elevation-1 table-nhanvien" loading-text="Đang tải dữ liệu ...">
+      <template v-slot:[`item.active`]="{ item }">
+        <v-chip v-if="item.active" color="pink" dark small>
+          Không hoạt động
         </v-chip>
         <v-chip v-else color="success" dark small> Đang hoạt động </v-chip>
-        <v-tooltip bottom v-if="item.hop_dong_het_han">
-          <template v-slot:activator="{ on }">
-            <v-icon class="ml-1 pointer" color="red" v-on="on">
-              mdi-alert-decagram
-            </v-icon>
-          </template>
-          <span>Sắp hết hạn hợp đồng thử việc</span>
-        </v-tooltip>
       </template>
       <template v-slot:[`item.action`]="{ item }">
         <v-menu>
@@ -94,20 +56,20 @@
             </v-btn>
           </template>
           <v-list>
-            <v-list-item @click="xemChiTiet(item)">
+            <v-list-item @click="editStore(item)">
               <v-list-item-title>
-                <v-icon>mdi-pencil</v-icon> Xem chi tiết
+                <v-icon>mdi-pencil</v-icon> Cập nhật
               </v-list-item-title>
             </v-list-item>
-            <v-list-item @click="nghiViec(item)">
+            <v-list-item @click="deactiveStore(item)">
               <v-list-item-title>
-                <div v-if="!item.da_nghi_viec">
+                <div v-if="!item.active">
                   <v-icon class="mr-2"> mdi-close </v-icon>
-                  Nghỉ việc
+                  Xóa
                 </div>
                 <div v-else>
                   <v-icon class="mr-2"> mdi-check </v-icon>
-                  Trở lại làm việc
+                  Phục hồi
                 </div>
               </v-list-item-title>
             </v-list-item>
@@ -118,30 +80,23 @@
     <div class="pt-2">
       <v-pagination v-model="page" :length="pageCount" @input="changePage" :total-visible="10">></v-pagination>
     </div>
+    <create-edit ref="cosoForm" @on-done="getData"></create-edit>
   </v-container>
 </template>
 <script>
 import { debounce } from "lodash";
-import { getNhanVien, nghiViec, exportNhanVien } from "@/api/nhanvien";
-import excelPic from "@/assets/images/excel.png";
-import { getPhongBan } from "@/api/phongban";
-import { getNhomToTrucThuoc } from "@/api/nhomto";
-import { getDanhMucCon } from "@/api/danhmuc";
-import { saveAs } from "file-saver";
 import { fullTextFilter } from "../../utils/stringHelper";
 import coSoPic from "@/assets/images/coSo.svg";
+import CreateEdit from "./create-edit";
 
 export default {
+  components: { CreateEdit },
   data() {
     return {
       fullTextFilter,
       coSoPic,
-      excelPic,
       phongBans: [],
       nhomTos: [],
-      phong_ban_id: null,
-      nhom_to_id: null,
-      chuc_vu_id: null,
       chucVus: [],
       trang_thai: null,
       trangThai: [
@@ -156,19 +111,16 @@ export default {
       totalDesserts: 0,
       tableData: [],
       btnLoading: false,
-      menu: {},
       loading: false,
       search: "",
-      roleId: null,
       imageEndpoint: process.env.VUE_APP_BASE,
-      roles: [],
       headers: [
         { text: "Tên cơ sở", value: "name", sortable: true },
         {
           text: "Số điện thoại",
           align: "start",
           sortable: true,
-          value: "so_dien_thoai",
+          value: "soDienThoai",
         },
         {
           text: "Email",
@@ -180,13 +132,13 @@ export default {
           text: "Địa chỉ",
           align: "start",
           sortable: true,
-          value: "gioi_tinh",
+          value: "address",
         },
         {
           text: "Trạng thái",
           align: "start",
           sortable: true,
-          value: "da_nghi_viec",
+          value: "active",
         },
         {
           text: "Chi tiết",
@@ -198,94 +150,50 @@ export default {
       ],
     };
   },
-  created() {
-    // this.getData();
-    // this.getDanhMuc();
+  mounted() {
+    this.getData()
   },
   watch: {
-    search: debounce(async function (val) {
-      this.loading = true;
-      this.page = 1;
-      let data = await getNhanVien({
-        perPage: this.itemsPerPage,
-        search: val,
-        role_id: this.roleId,
-        trang_thai: this.trang_thai,
-        nhom_to_id: this.nhom_to_id,
-        phong_ban_id: this.phong_ban_id,
-        chuc_vu_id: this.chuc_vu_id,
-        loai_nhom: this.loai_nhom,
-      });
-      this.loading = false;
-      this.tableData = data.data;
-      this.pageCount = data.meta.last_page;
+    search: debounce(async function () {
+
     }, 300),
   },
   methods: {
-    clickRow(item) {
-      this.$router.push("/nhansu/thongtinnhanvien/" + item.id);
-    },
-    async exportExcel() {
-      const res = await exportNhanVien();
-      saveAs(new Blob([res]), `Nhan_vien.xlsx`);
-    },
     async getData() {
-      this.loading = true;
-      let data = await getNhanVien({
-        page: this.page,
-        perPage: this.itemsPerPage,
-        search: this.search,
-        trang_thai: this.trang_thai,
-        nhom_to_id: this.nhom_to_id,
-        phong_ban_id: this.phong_ban_id,
-        chuc_vu_id: this.chuc_vu_id,
-        loai_nhom: this.loai_nhom,
-      });
-      this.tableData = data.data;
-      this.loading = false;
-      this.pageCount = data.meta.last_page;
-      this.getNhomTo();
+      this.tableData = [
+        {
+          name: 'Cơ sở Nguyễn Trãi',
+          soDienThoai: '12121',
+          email: 'AVX@email.com',
+          address: 'So 1 nguyen trai',
+          acitve: true,
+        },
+      ];
     },
     searchData() {
       this.page = 1;
       this.getData();
     },
-    async getDanhMuc() {
-      let phongbans = await getPhongBan({
-        perPage: 999,
-      });
-      this.chucVus = await getDanhMucCon({ code: "CHUCVU" });
-      this.phongBans = phongbans.data;
-    },
-    async getNhomTo() {
-      if (this.phong_ban_id) {
-        let data = await getNhomToTrucThuoc({
-          phong_ban_id: this.phong_ban_id,
-        });
-        this.nhomTos = data;
-      } else this.nhomTos = [];
-    },
+
+
     changePage(val) {
       this.page = val;
       this.getData();
     },
-    editMenu(menu) {
-      this.$refs.menuForm.showFormEdit(menu);
+    editStore(data) {
+      this.$refs.cosoForm.showFormEdit(data);
     },
-    createMenu() {
-      this.$refs.menuForm.showFormAdd();
+    createStore() {
+      this.$refs.cosoForm.showFormAdd();
     },
-    xemChiTiet(item) {
-      this.$router.push("/nhansu/thongtinnhanvien/" + item.id);
-    },
-    async nghiViec(data) {
+    async deactiveStore(data) {
       this.$confirmBox.show({
         title: data.da_nghi_viec
-          ? "Xác nhận trở lại công việc"
-          : "Xác nhận nghỉ việc",
+          ? "Xác nhận trở lại hoạt động"
+          : "Xác nhận ngừng hoạt động",
         width: 480,
         body:
-          "Nhân viên  " +
+          "Cơ sở  " +
           "<strong>" +
           data.name +
           "</strong>" +
@@ -293,7 +201,7 @@ export default {
             ? " Sẽ tiếp tục công việc và có thể sử dụng phần mềm"
             : " Sẽ không thể đăng nhập phần mềm"
           }`,
-        action: () => nghiViec({ nhan_vien_id: data.id }),
+        action: () => { },
         onDone: this.getData,
       });
     },

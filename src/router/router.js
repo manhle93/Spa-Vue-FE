@@ -105,6 +105,12 @@ export const routes = [
         ],
       },
       {
+        path: "khachhang",
+        name: "Khách hàng",
+        icon: 'mdi-clipboard-account',
+        component: Blank,     
+      },
+      {
         path: "danhmucsanpham",
         name: "Sản phẩm - Dịch vụ",
         icon: 'mdi-leaf',
